@@ -3,7 +3,12 @@ const router = express.Router()
 
 
 router.post('/signup', (req, res) => {
-    res.send('page signup')
+    if (!req.body) {
+        return res.sendStatus(500)
+    } else {
+        res.send({message: 'connecté'})
+    }
+
 })
 
 router.post('/login', (req, res) => {

@@ -15,4 +15,16 @@ router.post('/', (req, res) => {
     res.send('capture image')
 })
 
+router.put('/:id', (req, res) => {
+    res.send('sauces update')
+})
+
+router.delete('/:id', (req, res) => {
+    res.send('supprime la sauce')
+})
+
+router.post('/:id/like', (req, res) => {
+    res.send('sauce liker')
+})
+
 module.exports = router
