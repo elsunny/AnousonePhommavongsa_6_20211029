@@ -12,6 +12,8 @@ const mongoose = require('mongoose')
 
 
 
+
+
 //allow all domain name to connect to the server
 app.use(cors())
 
@@ -30,6 +32,8 @@ const saucesRouter = require('./routes/sauces')
 app.use('/api/auth', authRouter)
 app.use('/api/sauces', saucesRouter)
 
+app.listen(port)
+
 //connexion à mongodb
 const dbUri = 'mongodb+srv://anouph:t9R5NweDMJixREKx@ocp6.bjkl5.mongodb.net/OCP6?retryWrites=true&w=majority'
 mongoose.connect(dbUri, {
@@ -39,5 +43,4 @@ mongoose.connect(dbUri, {
 .then(() => console.log('connexion à MongoDB réussie !'))
 .catch(() => console.log('connexion à MongoDb échoué'))
 
-app.listen(port)
  
