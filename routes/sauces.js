@@ -8,7 +8,6 @@ router.get('/', (req, res) => {
 // ':' signifie que id sera un paramètre
 router.get('/:id', (req, res) => {
     res.send('sauce avec l\'id fourni')
-    console.log(req);
 })
 
 router.post('/', (req, res) => {

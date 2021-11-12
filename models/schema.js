@@ -2,6 +2,12 @@ const mongoose = require('mongoose')
 
 
 
+//creation d'un shema pour user
+const userSchema = mongoose.Schema({
+    email: String,
+    password: String
+});
+
 //creation d'un shema pour sauce
 const sauceSchema = mongoose.Schema ({
     name: { type: String, required: true },
@@ -14,19 +20,15 @@ const sauceSchema = mongoose.Schema ({
     dislikes: Number,
     usersLiked: Array,
     usersDisliked: Array
-})
+});
 
-//creation d'un shema pour user
-const userSchema = mongoose.Schema({
-    email: String,
-    password: String
-})
 
-//creation d'un modele de sauce
-const Sauce = mongoose.model('Sauce', sauceSchema)
 
-//creation d'un modele de user
-const User = mongoose.model('User', userSchema)
+//creation des modeles
+const User = mongoose.model('User', userSchema);
+const Sauce = mongoose.model('Sauce', sauceSchema);
 
 //export pour une utilisation des modèles dans d'autres fichiers
-module.exports = { Sauce, User}
+module.exports = { Sauce, User };
+// module.exports = User;
+// module.exports = Sauce;

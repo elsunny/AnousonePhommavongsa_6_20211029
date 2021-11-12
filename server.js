@@ -1,46 +1,62 @@
-const express = require('express')
-const app = express()
+const http = require('http');
+const app = require('./app');
 
-const port = 3000
-
-const multer = require('multer')
-const upload = multer()
-
-const cors = require('cors')
-
-const mongoose = require('mongoose')
+const dotEnv = require('dotenv');
+dotEnv.config();
 
 
+//fonction qui vérifie la validité du port
+const normalizePort = val => {
+  const port = parseInt(val, 10);
 
+  if (isNaN(port)) {
+    return val;
+  }
+  if (port >= 0) {
+    return port;
+  }
+  return false;
+};
 
+//process.env.PORT est le port utilisé si la plateforme de développement en propose une
+const port = normalizePort(process.env.PORT || '3000');
 
-//allow all domain name to connect to the server
-app.use(cors())
+// fonction qui recherche les différentes erreurs et les gère de manière appropriée
+const errorHandler = error => {
+  if (error.syscall !== 'listen') {
+    throw error;
+  }
+  const address = server.address();
+  const bind = typeof address === 'string' ? 'pipe ' + address : 'port: ' + port;
+  switch (error.code) {
+    case 'EACCES':
+      console.error(bind + ' requires elevated privileges.');
+      process.exit(1);
+      break;
+    case 'EADDRINUSE':
+      console.error(bind + ' is already in use.');
+      process.exit(1);
+      break;
+    default:
+      throw error;
+  }
+};
 
-app.get('/', (req, res) => {
-    console.log('ok', res.send(`listen on port ${port}`))
-})
+//indique sur quel port l'application express app doit tourner
+app.set('port', port);
 
-//indique que le serveur va recevoir des données au format json
-app.use(express.json())
+//création du serveur
+const server = http.createServer(app);
 
-//indique où se trouve les routes
-const authRouter = require('./routes/auth')
-const saucesRouter = require('./routes/sauces')
+server.on('error', errorHandler);
+server.on('listening', () => {
+  const address = server.address();
+  const bind = typeof address === 'string' ? 'pipe ' + address : 'port ' + port;
+  console.log('Listening on ' + bind);
+});
 
-//active l'utilisation des routes
-app.use('/api/auth', authRouter)
-app.use('/api/sauces', saucesRouter)
+//port d'écoute du serveur
+server.listen(port);
 
-app.listen(port)
-
-//connexion à mongodb
-const dbUri = 'mongodb+srv://anouph:t9R5NweDMJixREKx@ocp6.bjkl5.mongodb.net/OCP6?retryWrites=true&w=majority'
-mongoose.connect(dbUri, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true
-})
-.then(() => console.log('connexion à MongoDB réussie !'))
-.catch(() => console.log('connexion à MongoDb échoué'))
 
  
