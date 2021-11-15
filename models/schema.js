@@ -1,15 +1,15 @@
 const mongoose = require('mongoose');
-// const uniqueValidator = require('mongoose-unique-validator');
+const uniqueValidator = require('mongoose-unique-validator');
 
 
 //creation d'un shema pour user
 const userSchema = mongoose.Schema({
-    email: { type: String, required: true },
+    email: { type: String, required: true, unique: true},
     password: { type: String, required: true }
 });
 
-// // impose l'utilisation d'un user unique
-// userSchema.plugin(uniqueValidator);
+// impose l'utilisation d'un user unique
+userSchema.plugin(uniqueValidator);
 
 //creation d'un shema pour sauce
 const sauceSchema = mongoose.Schema ({
