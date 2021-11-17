@@ -42,6 +42,6 @@ const saucesRouter = require('./routes/sauces');
 app.use('/api/auth/', authRouter)
 app.use('/api/sauces/', saucesRouter)
 
-app.use('public/images', express.static(path.join(__dirname,'images')));
+app.use(express.static('public'));
 
 module.exports = app;

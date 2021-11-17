@@ -6,9 +6,23 @@ const { Sauce } = require("../models/schema");
 // retourne toutes les sauces de la bdd
 exports.getAllSauces = (req, res) => {
     Sauce.find()
-        .then((sauce) => {
-            res.status(200).json( sauce )
+        .then((sauces) => {
+            console.log("sauces", sauces);
+            res.status(200).json(
+                sauces.map((sauce) => {
+                    return {
+                        ...sauce.toObject(),
+                        imageUrl:
+                            req.protocol +
+                            "://" +
+                            req.get("host") +
+                            "/images/" +
+                            sauce.imageUrl
+                    };
+                })
+            );
         })
+
         .catch((error) => res.status(404).json({ error }));
 };
 
@@ -25,13 +39,12 @@ exports.recordSauce = (req, res) => {
     delete sauceObject._id;
     const sauce = new Sauce({
         ...sauceObject,
-        imageUrl: `${req.protocol}://${req.get("host")}/public/images/${
-            req.file.filename
-        }`,
+        // imageUrl: `${req.protocol}://${req.get("host")}/images/${
+        imageUrl: `${req.file.filename}`,
         likes: 0,
         dislikes: 0,
         usersLiked: [],
-        usersDisliked: []
+        usersDisliked: [],
     });
     sauce
         .save()
