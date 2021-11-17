@@ -22,7 +22,6 @@ mongoose.connect(process.env.DB_URI, {
 app.use(express.json());
 
 
-// app.use('/images', express.static(path.join(__dirname,'images')));
 
 // traitement des erreurs de cors
 // accéder à notre API depuis n'importe quelle origine ( '*' )
@@ -43,5 +42,6 @@ const saucesRouter = require('./routes/sauces');
 app.use('/api/auth/', authRouter)
 app.use('/api/sauces/', saucesRouter)
 
+app.use('public/images', express.static(path.join(__dirname,'images')));
 
 module.exports = app;
