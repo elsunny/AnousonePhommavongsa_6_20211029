@@ -66,30 +66,58 @@ const getHash = (key) => {
     return crypto.createHmac("sha1", key).update(salt).digest("hex");
 };
 
+// //login route
+// exports.login = (req, res) => {
+//     if (!req.body) {
+//         return res.status(500).json({ error: 'problème de connexion !'});
+//     }
+//     User.findOne({ email: req.body.email })
+//         .then( user => {
+//             if (!user) {
+//                 return res.status(401).json({ error: 'utilisateur non trouvé !'});
+//             }
+//             const pwdLogin = getHash(req.body.password);
+//             if (pwdLogin != user.password) {
+//                 return res.status(401).json({ error: 'mot de passe incorrect !'});
+//             } else {
+//                 res.status(200).json({
+//                     userId: user._id,
+//                     token: jwt.sign(
+//                         { userId : user._id },
+//                         'random_token_secret',
+//                         { expiresIn: '24h' }
+//                     )
+//                 })
+//             }
+//         })
+//         .catch( error => res.status(500).json( error ))
+// };
+
 //login route
-exports.login = (req, res) => {
-    console.log('req', req.body);
+exports.login = async (req, res) => {
     if (!req.body) {
         return res.status(500).json({ error: 'problème de connexion !'});
     }
-    User.findOne({ email: req.body.email })
-        .then( user => {
-            if (!user) {
-                return res.status(401).json({ error: 'utilisateur non trouvé !'});
-            }
-            const pwdLogin = getHash(req.body.password);
-            if (pwdLogin != user.password) {
-                return res.status(401).json({ error: 'mot de passe incorrect !'});
-            } else {
-                res.status(200).json({
-                    userId: user._id,
-                    token: jwt.sign(
-                        { userId : user._id },
-                        'random_token_secret',
-                        { expiresIn: '24h' }
-                    )
-                })
-            }
-        })
-        .catch( error => res.status(500).json( error ))
+    try {
+        const user = await User.findOne({ email: req.body.email }).exec();
+        if (!user) {
+            return res.status(401).json({ error: 'utilisateur non trouvé !'});
+        }
+        const pwdLogin = getHash(req.body.password);
+        if (pwdLogin != user.password) {
+            return res.status(401).json({ error: 'mot de passe incorrect !'});
+        } else {
+            res.status(200).json({
+                userId: user._id,
+                token: jwt.sign(
+                    { userId : user._id },
+                    'random_token_secret',
+                    { expiresIn: '24h' }
+                )
+            })
+        }
+    
+    } catch( error) {
+        res.status(500).json( error )
+    }
 };

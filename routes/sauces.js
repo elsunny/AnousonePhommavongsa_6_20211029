@@ -1,29 +1,28 @@
 const express = require('express')
 const router = express.Router()
 
-router.get('/', (req, res) => {
-    res.send('tableau de toutes les sauces')
-})
+const authentification = require('../middleware/authentification');
 
+const multer = require('../middleware/multer-config');
+
+const controllerSauce = require('../controllers/sauce');
+
+// route permettant l'affichage de l'ensemble des sauces de la bdd
+router.get('/', authentification, controllerSauce.getAllSauces);
+
+router.post('/', authentification, multer, controllerSauce.recordSauce);
+
+// route permettant l'affichage d'une sauce spécifique
 // ':' signifie que id sera un paramètre
-router.get('/:id', (req, res) => {
-    res.send('sauce avec l\'id fourni')
-})
+// router.get('/:id', authentification, controllerSauce.getASauce);
 
-router.post('/', (req, res) => {
-    res.send('capture image')
-})
 
-router.put('/:id', (req, res) => {
-    res.send('sauces update')
-})
+// router.put('/:id', authentification, controllerSauce.modifySauce);
 
-router.delete('/:id', (req, res) => {
-    res.send('supprime la sauce')
-})
+// router.delete('/:id', authentification, controllerSauce.deleteSauce);
 
-router.post('/:id/like', (req, res) => {
-    res.send('sauce liker')
-})
+// router.post('/:id/like', (req, res) => {
+//     res.send('sauce liker')
+// })
 
 module.exports = router

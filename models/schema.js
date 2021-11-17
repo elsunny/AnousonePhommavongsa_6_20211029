@@ -13,6 +13,7 @@ userSchema.plugin(uniqueValidator);
 
 //creation d'un shema pour sauce
 const sauceSchema = mongoose.Schema ({
+    userId: { type: String, required: true },
     name: { type: String, required: true },
     manufacturer: { type: String, required: false },
     description: { type: String, required: true },
