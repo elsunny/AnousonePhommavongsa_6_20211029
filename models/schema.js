@@ -15,15 +15,15 @@ userSchema.plugin(uniqueValidator);
 const sauceSchema = mongoose.Schema ({
     userId: { type: String, required: true },
     name: { type: String, required: true },
-    manufacturer: { type: String, required: false },
+    manufacturer: { type: String, required: true },
     description: { type: String, required: true },
-    mainPepper: { type: String, required: false },
+    mainPepper: { type: String, required: true },
     imageUrl: { type: String, required: true },
-    heat: Number,
-    likes: Number,
-    dislikes: Number,
-    usersLiked: Array,
-    usersDisliked: Array
+    heat: { type: Number, required: true },
+    likes: { type: Number, required: true },
+    dislikes: { type: Number, required: true },
+    usersLiked: { type: Array, default: []},
+    usersDisliked: { type: Array, default: []}
 });
 
 
