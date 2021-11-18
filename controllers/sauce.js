@@ -1,16 +1,16 @@
 const express = require("express");
 const jwt = require("jsonwebtoken");
-
 const { Sauce } = require("../models/schema");
+
+// file system, permet l'accès aux fonctions de modification le système de fichier
+const fs = require("fs");
 
 // retourne toutes les sauces de la bdd
 exports.getAllSauces = (req, res) => {
     Sauce.find()
         .then((sauces) => {
             res.status(200).json(
-                sauces.map((sauce) => 
-                    sauceNormalizer(req, sauce)
-                )
+                sauces.map((sauce) => sauceNormalizer(req, sauce))
             );
         })
 
@@ -21,20 +21,20 @@ exports.getAllSauces = (req, res) => {
 exports.getASauce = (req, res) => {
     Sauce.findOne({ _id: req.params.id })
         .then((sauce) => {
-            res.status(200).json(
-                sauceNormalizer(req, sauce)
-            );
+            res.status(200).json(sauceNormalizer(req, sauce));
         })
         .catch((error) => res.status(404).json(error));
 };
 
+// retourne un objet normal ald d'un objet mongoose
 const sauceNormalizer = (req, sauce) => {
     return {
         ...sauce.toObject(),
-        imageUrl:
-            `${req.protocol}://${req.get("host")}/images/${sauce.imageUrl}`,
+        imageUrl: `${req.protocol}://${req.get("host")}/images/${
+            sauce.imageUrl
+        }`,
     };
-}
+};
 
 // capture une nouvelle sauce
 exports.recordSauce = (req, res) => {
@@ -60,4 +60,16 @@ exports.modifySauce = (req, res) => {
         .catch((error) => res.status(400).json(error));
 };
 
-// exports.deleteSauce
+exports.deleteSauce = (req, res) => {
+    Sauce.findOne({ _id: req.params.id })
+    .then((sauce) => {
+        const filename = sauce.imageUrl;
+        console.log("filename", filename);
+        fs.unlink(`public/images/${filename}`, () => {
+            Sauce.deleteOne({ _id: req.params.id })
+                .then(() => res.status(200).json(sauce))
+                .catch(error => res.status(404).json(error));
+        });
+    })
+    .catch( error => res.status(500).json( error ));
+};

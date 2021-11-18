@@ -16,12 +16,12 @@ router.post('/', authentification, multer, controllerSauce.recordSauce);
 // route permettant l'affichage d'une sauce spécifique
 // ':' signifie que id sera un paramètre
 router.get('/:id', authentification, controllerSauce.getASauce);
-    
+
 
 
 // router.put('/:id', authentification, controllerSauce.modifySauce);
 
-// router.delete('/:id', authentification, controllerSauce.deleteSauce);
+router.delete('/:id', authentification, controllerSauce.deleteSauce);
 
 // router.post('/:id/like', (req, res) => {
 //     res.send('sauce liker')
