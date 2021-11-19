@@ -19,8 +19,9 @@ router.get('/:id', authentification, controllerSauce.getASauce);
 
 
 
-// router.put('/:id', authentification, controllerSauce.modifySauce);
+router.put('/:id', authentification, multer, controllerSauce.modifySauce);
 
+// route permettant de supprimer une sauce
 router.delete('/:id', authentification, controllerSauce.deleteSauce);
 
 // router.post('/:id/like', (req, res) => {

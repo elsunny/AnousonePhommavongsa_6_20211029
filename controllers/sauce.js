@@ -55,7 +55,11 @@ exports.recordSauce = (req, res) => {
 };
 
 exports.modifySauce = (req, res) => {
-    Sauce.updateOne({ _id: req.params.id }, { ...req.body, _id: req.params.id })
+    const sauceModified = req.file ? {
+        ...JSON.parse(req.body.sauce),
+        imageUrl: `${req.file.filename}`
+    } : { ...req.body };
+    Sauce.updateOne({ _id: req.params.id }, { ...sauceModified, _id: req.params.id })
         .then(() => res.status(200).json({ message: "objet modifié" }))
         .catch((error) => res.status(400).json(error));
 };
