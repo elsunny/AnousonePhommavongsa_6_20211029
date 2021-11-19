@@ -54,26 +54,42 @@ exports.recordSauce = (req, res) => {
         .catch((error) => res.status(400).json(error));
 };
 
+//modifie une sauce
 exports.modifySauce = (req, res) => {
-    const sauceModified = req.file ? {
-        ...JSON.parse(req.body.sauce),
-        imageUrl: `${req.file.filename}`
-    } : { ...req.body };
-    Sauce.updateOne({ _id: req.params.id }, { ...sauceModified, _id: req.params.id })
+    //supprime l'image précédente si une nouvelle image est uploadée
+    Sauce.findOne({ _id: req.params.id }).then((sauce) => {
+        const filenameHistory = sauce.imageUrl;
+        if (req.file) {
+            fs.unlink(`public/images/${filenameHistory}`, (err) => {
+                if (err) throw err;
+            });
+        }
+    });
+    // mise à jour des informations de la sauce
+    const sauceModified = req.file
+        ? {
+              ...JSON.parse(req.body.sauce),
+              imageUrl: `${req.file.filename}`,
+          }
+        : { ...req.body };
+    Sauce.updateOne(
+        { _id: req.params.id },
+        { ...sauceModified, _id: req.params.id }
+    )
         .then(() => res.status(200).json({ message: "objet modifié" }))
         .catch((error) => res.status(400).json(error));
 };
 
+// supprime une sauce
 exports.deleteSauce = (req, res) => {
     Sauce.findOne({ _id: req.params.id })
-    .then((sauce) => {
-        const filename = sauce.imageUrl;
-        console.log("filename", filename);
-        fs.unlink(`public/images/${filename}`, () => {
-            Sauce.deleteOne({ _id: req.params.id })
-                .then(() => res.status(200).json(sauce))
-                .catch(error => res.status(404).json(error));
-        });
-    })
-    .catch( error => res.status(500).json( error ));
+        .then((sauce) => {
+            const filename = sauce.imageUrl;
+            fs.unlink(`public/images/${filename}`, () => {
+                Sauce.deleteOne({ _id: req.params.id })
+                    .then(() => res.status(200).json(sauce))
+                    .catch((error) => res.status(404).json(error));
+            });
+        })
+        .catch((error) => res.status(500).json(error));
 };
