@@ -17,15 +17,13 @@ router.post('/', authentification, multer, controllerSauce.recordSauce);
 // ':' signifie que id sera un paramètre
 router.get('/:id', authentification, controllerSauce.getASauce);
 
-
-
+// route permettant la modification de la sauce
 router.put('/:id', authentification, multer, controllerSauce.modifySauce);
 
 // route permettant de supprimer une sauce
 router.delete('/:id', authentification, controllerSauce.deleteSauce);
 
-// router.post('/:id/like', (req, res) => {
-//     res.send('sauce liker')
-// })
+// route pour la gestion des like/dislike
+router.post('/:id/like', authentification, controllerSauce.likeSauce);
 
 module.exports = router
