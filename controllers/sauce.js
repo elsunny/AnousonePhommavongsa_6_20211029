@@ -17,7 +17,7 @@ exports.getAllSauces = (req, res) => {
         .catch((error) => res.status(404).json(error));
 };
 
-// retourne une sauce par rapport à une id
+// retourne une sauce par rapport à un id sauce
 exports.getASauce = (req, res) => {
     Sauce.findOne({ _id: req.params.id })
         .then((sauce) => {
@@ -26,7 +26,7 @@ exports.getASauce = (req, res) => {
         .catch((error) => res.status(404).json(error));
 };
 
-// retourne un objet normal ald d'un objet mongoose
+// permet de normaliser un objet mongoose
 const sauceNormalizer = (req, sauce) => {
     return {
         ...sauce.toObject(),
@@ -36,7 +36,7 @@ const sauceNormalizer = (req, sauce) => {
     };
 };
 
-// capture une nouvelle sauce
+// enregistre une nouvelle sauce
 exports.recordSauce = (req, res) => {
     const sauceObject = JSON.parse(req.body.sauce);
     delete sauceObject._id;
@@ -61,7 +61,9 @@ exports.modifySauce = (req, res) => {
         const filenameHistory = sauce.imageUrl;
         if (req.file) {
             fs.unlink(`public/images/${filenameHistory}`, (err) => {
-                if (err) throw err;
+                if (err) {
+                    console.log(err);
+                }
             });
         }
     });
@@ -98,105 +100,87 @@ exports.deleteSauce = (req, res) => {
 exports.likeSauce = (req, res) => {
     Sauce.findOne({ _id: req.params.id })
         .then((sauce) => {
-            res.status(200).json(sauceNormalizer(req, sauce));
+            
             const foundInLiked = isInArray(sauce.usersLiked, req.body.userId);
             const foundInDisliked = isInArray(sauce.usersDisliked, req.body.userId);
             const like = req.body.like;
+            // l'utilisateur n'a jamais liker ou disliker
             if ((!foundInLiked) && (!foundInDisliked)) {
-                
                 switch (like) {
                     case 1 : 
-                        addLike(sauce, sauce.usersLiked, req.body.userId);
-                        sauce.save();
+                        addLikeDislike(sauce, 'usersLiked', req.body.userId);
                         break;
                     case -1: 
-                        addDislike(sauce, sauce.usersDisliked, req.body.userId);
-                        sauce.save();
+                        addLikeDislike(sauce, 'usersDisliked', req.body.userId);
                         break;
                 }
 
             }
-            if (foundInLiked) {
+            // l'utilisateur a déjà liké
+            else if (foundInLiked) {
                 switch (like) {
                     case 1:
-                        res.send({message: 'Vous avez déjà liké'});
-                        break;
+                        res.status(400).json({message: 'Vous avez déjà liké'}); //<<<<<<<<<<<<<< Aurelien pourquoi ça ne s'affiche pas
+                        return;
                     case 0:
-                        removeLike(sauce, sauce.usersLiked, req.body.userId);
-                        sauce.save();
+                        removeLikeDislike(sauce, 'usersLiked', req.body.userId);
                         break;
                     case -1: 
-                        removeLike(sauce, sauce.usersLiked, req.body.userId);
-                        addDislike(sauce, sauce.usersDisliked, req.body.userId);
-                        sauce.save();
+                        removeLikeDislike(sauce, 'usersLiked', req.body.userId);
+                        addLikeDislike(sauce, 'usersDisliked', req.body.userId);
                         break;
                     
                 }
             }
-            if (foundInDisliked) {
+            else if (foundInDisliked) {
                 switch (like) {
                     case 1:
-                        removeDislike(sauce, sauce.usersDisliked, req.body.userId);
-                        addLike(sauce, sauce.usersLiked, req.body.userId);
-                        sauce.save();
+                        removeLikeDislike(sauce, 'usersDisliked', req.body.userId);
+                        addLikeDislike(sauce, 'usersLiked', req.body.userId);
                         break;
                     case 0:
-                        removeDislike(sauce, sauce.usersDisliked, req.body.userId);
-                        sauce.save();
+                        removeLikeDislike(sauce, 'usersDisliked', req.body.userId);
                         break;
                     case -1:
-                        res.send({message: 'Vous avez déjà disliké'});
+                        res.status(400).json({message: 'Vous avez déjà disliké'});
                         break;
 
                 }
             }
+            res.status(200).json(sauceNormalizer(req, sauce));
         })
         .catch((error) => res.status(404).json(error));
 };
 
-// fonction qui ajoute un like
-const addLike = (sauce, arr, el) => {
+const computeLikeDislike = (sauce) => {
+    sauce.likes = sauce.usersLiked.length;
+    sauce.disLikes = sauce.usersDisliked.length;
+}
+
+// fonction qui ajoute un like ou dislike
+const addLikeDislike = (sauce, prop, el) => {
     try {
-        arr.push(el);
-        sauce.likes = arr.length;
+        sauce[prop].push(el);
+        computeLikeDislike(sauce);
+        sauce.save();
 
     } catch (error) {
         console.log(error);
     }
 }
 
-// fonction qui retire un like
-const removeLike = (sauce, arr, el) => {
+// fonction qui retire un like ou dislike
+const removeLikeDislike = (sauce, prop, el) => {
     try {
-        arr.pop(el);
-        sauce.likes = arr.length;
+        sauce[prop] = sauce[prop].filter(item => item !== el);
+        computeLikeDislike(sauce);
+        sauce.save();
 
     } catch (error) {
         console.log(error);
     }
 }
 
-// fonction qui ajoute un dislike
-const addDislike = (sauce, arr, el) => {
-    try {
-        arr.push(el);
-        sauce.dislikes = arr.length;
-
-    } catch (error) {
-        console.log(error);
-    }
-}
-
-// fonction qui retire un dislike
-const removeDislike = (sauce, arr, el) => {
-    try {
-        arr.pop(el);
-        sauce.dislikes = arr.length;
-
-    } catch (error) {
-        console.log(error);
-    }
-}
 
 // fonction qui détermine si un element est présent dans un tableau
 const isInArray = (arr, el) => {
