@@ -1,12 +1,14 @@
 const express = require("express");
 const jwt = require("jsonwebtoken");
 
+require('dotenv').config()
+
 //import models schema
 const { User } = require("../models/schema");
 
 //import crypto to hash string
 const crypto = require("crypto");
-const salt = "banana";
+const salt = process.env.DB_SALT;
 
 // //signup route
 // exports.signup = (req, res) => {
