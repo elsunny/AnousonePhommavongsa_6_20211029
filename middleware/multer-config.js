@@ -1,11 +1,13 @@
 const multer = require('multer');
 
+// indique aux naviguateur la nature des fichiers
 const MIME_TYPES = {
     'image/jpg' : 'jpg',
     'image/jpeg' : 'jpg',
     'image/png' : 'png'
 }
 
+// upload image sauce et création du nom de fichier
 const storage = multer.diskStorage ({
     destination: (req, file, callback) => {
         callback(null, 'public/images'); //null ne prend pas en compte d'erreur

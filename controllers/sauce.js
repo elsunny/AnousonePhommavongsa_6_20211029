@@ -131,6 +131,7 @@ exports.likeSauce = (req, res) => {
                     
                 }
             }
+            // l'utilisateur a déjà disliké
             else if (foundInDisliked) {
                 switch (like) {
                     case 1:
@@ -151,9 +152,10 @@ exports.likeSauce = (req, res) => {
         .catch((error) => res.status(404).json(error));
 };
 
+// comptabilise le nombre de likes ou dislikes
 const computeLikeDislike = (sauce) => {
     sauce.likes = sauce.usersLiked.length;
-    sauce.disLikes = sauce.usersDisliked.length;
+    sauce.dislikes = sauce.usersDisliked.length;
 }
 
 // fonction qui ajoute un like ou dislike

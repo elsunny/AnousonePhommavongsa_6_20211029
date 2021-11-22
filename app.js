@@ -42,6 +42,7 @@ const saucesRouter = require('./routes/sauces');
 app.use('/api/auth/', authRouter)
 app.use('/api/sauces/', saucesRouter)
 
+// permet l'accès public au répertoire public
 app.use(express.static('public'));
 
 module.exports = app;

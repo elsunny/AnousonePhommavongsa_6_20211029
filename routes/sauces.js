@@ -1,11 +1,11 @@
 const express = require('express')
 const router = express.Router()
-
 const authentification = require('../middleware/authentification');
-
 const multer = require('../middleware/multer-config');
-
 const controllerSauce = require('../controllers/sauce');
+
+
+
 
 // route permettant l'affichage de l'ensemble des sauces de la bdd
 router.get('/', authentification, controllerSauce.getAllSauces);
@@ -25,5 +25,9 @@ router.delete('/:id', authentification, controllerSauce.deleteSauce);
 
 // route pour la gestion des like/dislike
 router.post('/:id/like', authentification, controllerSauce.likeSauce);
+
+
+
+
 
 module.exports = router

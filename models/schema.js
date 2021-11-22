@@ -26,13 +26,6 @@ const sauceSchema = mongoose.Schema ({
     usersDisliked: { type: Array, default: []}
 });
 
-// // creation d'un schema pour liker 
-// const sauceLike = mongoose.Schema ({
-//     userId: { type: String, required: true },
-//     like: { type: Number, default: 0}
-// });
-
-
 
 //creation des modeles
 const User = mongoose.model('User', userSchema);
