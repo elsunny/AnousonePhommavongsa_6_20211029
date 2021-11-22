@@ -100,7 +100,6 @@ exports.deleteSauce = (req, res) => {
 exports.likeSauce = (req, res) => {
     Sauce.findOne({ _id: req.params.id })
         .then((sauce) => {
-            
             const foundInLiked = isInArray(sauce.usersLiked, req.body.userId);
             const foundInDisliked = isInArray(sauce.usersDisliked, req.body.userId);
             const like = req.body.like;
@@ -120,7 +119,7 @@ exports.likeSauce = (req, res) => {
             else if (foundInLiked) {
                 switch (like) {
                     case 1:
-                        res.status(400).json({message: 'Vous avez déjà liké'}); //<<<<<<<<<<<<<< Aurelien pourquoi ça ne s'affiche pas
+                        res.status(400).json({message: 'Vous avez déjà liké'}); 
                         return;
                     case 0:
                         removeLikeDislike(sauce, 'usersLiked', req.body.userId);
@@ -143,7 +142,7 @@ exports.likeSauce = (req, res) => {
                         break;
                     case -1:
                         res.status(400).json({message: 'Vous avez déjà disliké'});
-                        break;
+                        return;
 
                 }
             }
