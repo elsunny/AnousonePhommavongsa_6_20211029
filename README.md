@@ -5,11 +5,11 @@ Elle permet à des utilisateurs de se créer un compte, ils peuvent ensuite ajou
 
 ## Pour démarrer le projet
 
-Vous devez compléter le fichier .env à la racine.  
+Vous devez créer un fichier .env à la racine en suivant le modèle .env-exemple.  
 
 Veuillez y initialiser les variables suivantes:
 - DB_URI *( avec l'adresse complète d'accès à votre base de données)*
-- DB_TOKEN *( avec la clef de votre token)*
+- JWT_SECRET *( avec la clef de votre token)*
 - DB_SALT *( avec la sécurité à ajouter au mot de passe pour chaque mot de passe utilisateur)*
 
 Lancer le server avec npm run devStart dans votre terminal.

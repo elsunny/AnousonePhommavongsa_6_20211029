@@ -53,7 +53,7 @@ exports.login = (req, res) => {
                     userId: user._id,
                     token: jwt.sign(
                         { userId : user._id },
-                        'random_token_secret',
+                        process.env.DB_TOKEN,
                         { expiresIn: '24h' }
                     )
                 })
