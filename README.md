@@ -9,7 +9,6 @@ Vous devez créer un fichier .env à la racine en suivant le modèle .env-exempl
 
 Veuillez y initialiser les variables suivantes:
 - DB_URI *( avec l'adresse complète d'accès à votre base de données)*
-- JWT_SECRET *( avec la clef de votre token)*
-- DB_SALT *( avec la sécurité à ajouter au mot de passe pour chaque mot de passe utilisateur)*
+- JWT_SECRET *( avec votre clef secrete*
 
 Lancer le server avec npm run devStart dans votre terminal.

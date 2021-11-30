@@ -1,8 +1,12 @@
 const express = require('express');
+const helmet = require('helmet');
 const mongoose = require('mongoose');
 const path = require('path');
 
 const app = express();
+
+// sécurise l'utilisation d'express
+app.use(helmet());
 
 // utilisation du fichier env
 require('dotenv').config()
